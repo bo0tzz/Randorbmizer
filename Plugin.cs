@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
 using HarmonyLib;
 using Relics;
 using UnityEngine;
@@ -27,8 +28,14 @@ namespace PeglinRandorbmizer
             "DisplayPrefab"
         };
 
+        public static ConfigEntry<bool> DoRandomizeDeck;
+        public static ConfigEntry<bool> DoRandomizeRelics;
+
         private void Awake()
         {
+            DoRandomizeDeck = Config.Bind("Deck", "Random_Deck_Enabled", true, "Enable deck randomization");
+            DoRandomizeRelics = Config.Bind("Relics", "Random_Relics_Enabled", true, "Enable relic randomization");
+
             GameObject[] orbs = Resources.LoadAll<GameObject>("Prefabs/Orbs/");
             GameObject[] availableOrbs = orbs.Where(o => !OrbBlacklist.Contains(o.name)).ToArray();
 
@@ -90,6 +97,7 @@ namespace PeglinRandorbmizer
     {
         public static bool Prefix(DeckManager __instance)
         {
+            if (!Plugin.DoRandomizeDeck.Value) return true;
             Plugin.RandomizeDeck(__instance);
             __instance.ShuffleCompleteDeck();
             return false;
@@ -101,8 +109,8 @@ namespace PeglinRandorbmizer
     {
         public static void Prefix(DeckManager ____deckManager, RelicManager ____relicManager)
         {
-            Plugin.RandomizeDeck(____deckManager);
-            Plugin.RandomizeRelics(____relicManager);
+            if (Plugin.DoRandomizeDeck.Value) Plugin.RandomizeDeck(____deckManager);
+            if (Plugin.DoRandomizeRelics.Value) Plugin.RandomizeRelics(____relicManager);
         }
     }
 }
