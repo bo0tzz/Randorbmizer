@@ -1,5 +1,7 @@
 ﻿# Randorbmizer
 
+**This mod has not been updated for the early access release, and has not been tested. It probably does not work.**
+
 This is a mod for Peglin that randomizes the game. 
 It will give you random orbs and random relics. You can disable both of those in the config. 
 
